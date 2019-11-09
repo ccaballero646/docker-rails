@@ -1,0 +1,14 @@
+variables:
+  DOCKER_BUILDER_IMAGE: gcr.io/kaniko-project/executor:debug
+
+stages:
+  build
+
+build:
+  stage: build
+  image:
+    name: $DOCKER_BUILDER_IMAGE
+    before_script:
+      - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    script:
+      - kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $DOCKER_IMAGE_NAME:6.0.0
